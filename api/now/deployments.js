@@ -6,6 +6,8 @@ export default {
       headers: {
         authorization: authToken
       }
-    }).then(response => response.data)
+    }).then((response) => {
+      return response.data
+    })
   }
 }

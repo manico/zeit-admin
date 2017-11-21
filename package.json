@@ -15,8 +15,8 @@
   "dependencies": {
     "axios": "^0.17.1",
     "lodash": "^4.17.4",
-    "nuxt": "^1.0.0-rc9",
-    "vuetify": "^0.17.1"
+    "nuxt": "git+https://github.com/nuxt/nuxt.js.git#dev",
+    "vuetify": "^0.17.2"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

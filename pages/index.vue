@@ -1,13 +1,21 @@
 <template>
   <div>
-    {{deployments}}
-    <api-tokens></api-tokens>
+    <v-card v-if="deployments">
+      <v-data-table dark
+                    hide-headers
+                    :items="deployments"
+                    :pagination.sync="pagination">
+        <template slot="items"
+                  slot-scope="props">
+          <td>{{ props.item.name }}</td>
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
 <script>
   import api from '~/api'
-  import ApiTokens from '~/components/ApiTokens.vue'
 
   export default {
     asyncData ({ store }) {
@@ -19,12 +27,12 @@
         }
       })
     },
-    components: {
-      ApiTokens
-    },
     data () {
       return {
-        deployments: []
+        deployments: null,
+        pagination: {
+          rowsPerPage: 10
+        }
       }
     }
   }
