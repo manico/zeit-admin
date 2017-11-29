@@ -4,7 +4,7 @@ export default {
   getDomains (authToken) {
     return http.get('/domains', {
       headers: {
-        authorization: authToken
+        authorization: `Bearer ${authToken}`
       }
     }).then((response) => {
       return response.data

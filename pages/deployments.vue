@@ -4,7 +4,8 @@
       <v-flex>
         <v-expansion-panel popout
                            expand
-                           focusable>
+                           focusable
+                           v-if="deploymentProjects">
           <v-expansion-panel-content :key="project.name"
                                      :class="[panelClass(index)]"
                                      v-model="activePanels[index]"
@@ -48,13 +49,13 @@
 
   export default {
     asyncData ({ store }) {
-      const requiresData = !store.getters.deploymentProjects.length
-      if (requiresData) return store.dispatch('getDeployments')
+      if (!store.getters.deploymentProjects.length) {
+        return store.dispatch('loadDeployments')
+      }
     },
     data () {
       return {
         activePanels: [true],
-        deploymentProjects: [],
         pagination: {
           rowsPerPage: 10
         }
@@ -64,8 +65,25 @@
       return {
         title: 'Deployments',
         meta: [
-          { hid: 'description', name: 'description', content: 'List all the deployments under the account corresponding to the API token.' }
+          {
+            hid: 'description',
+            name: 'description',
+            content: 'List all the deployments under the account'
+          }
         ]
+      }
+    },
+    computed: {
+      authToken () {
+        return this.$store.getters.authToken
+      },
+      deploymentProjects () {
+        return this.$store.getters.deploymentProjects
+      }
+    },
+    watch: {
+      authToken () {
+        this.loadDeployments()
       }
     },
     methods: {
@@ -105,12 +123,12 @@
       isFirstActivePanel (index) {
         return index === 0 && this.activePanels[index]
       },
+      loadDeployments () {
+        this.$store.dispatch('loadDeployments')
+      },
       panelClass (index) {
         return this.isFirstActivePanel(index) ? 'mt-0' : null
       }
-    },
-    mounted () {
-      this.deploymentProjects = this.$store.getters.deploymentProjects
     }
   }
 </script>

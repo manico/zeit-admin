@@ -4,19 +4,7 @@
                          fixed
                          :clipped="isDrawerClipped"
                          v-model="drawer">
-      <v-list>
-        <v-list-tile :exact="index === 0"
-                     :to="item"
-                     :key="item.name"
-                     v-for="(item, index) in menu">
-          <v-list-tile-action>
-            <v-icon>widgets</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{item.name}}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
+      <main-menu></main-menu>
     </v-navigation-drawer>
     <v-toolbar app
                dense
@@ -26,27 +14,36 @@
       <v-toolbar-side-icon @click.stop="toggleDrawer"></v-toolbar-side-icon>
       <v-toolbar-title class="white--text">Zeit Admin</v-toolbar-title>
       <v-spacer></v-spacer>
+      <toolbar-menu></toolbar-menu>
     </v-toolbar>
     <v-content>
       <nuxt/>
+      <global-snackbar></global-snackbar>
     </v-content>
     <v-footer app></v-footer>
   </v-app>
 </template>
 
 <script>
+  import MainMenu from '~/components/MainMenu'
+  import ToolbarMenu from '~/components/ToolbarMenu'
+  import GlobalSnackbar from '~/components/GlobalSnackbar'
+
   export default {
+    components: {
+      MainMenu,
+      ToolbarMenu,
+      GlobalSnackbar
+    },
     data () {
       return {
-        drawer: null
+        drawer: null,
+        errorSnackbar: false
       }
     },
     computed: {
       isDrawerClipped () {
         return this.$vuetify.breakpoint.width > 1264
-      },
-      menu () {
-        return this.$router.options.routes
       }
     },
     methods: {
