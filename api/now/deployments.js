@@ -20,6 +20,19 @@ const parseDeploymentProjects = (deployments) => {
 }
 
 export default {
+  deleteDeployment (authToken, deployment) {
+    return http.delete(`/now/deployments/${deployment.uid}`, {
+      headers: {
+        authorization: `Bearer ${authToken}`
+      }
+    }).then((response) => {
+      return {
+        deployment
+      }
+    }).catch((error) => {
+      return error.response.data
+    })
+  },
   getDeployments (authToken) {
     return http.get('/now/deployments', {
       headers: {

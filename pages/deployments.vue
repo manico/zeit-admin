@@ -18,22 +18,34 @@
                             :pagination.sync="pagination">
                 <template slot="items"
                           slot-scope="props">
-                  <td>
-                    <a :href="getDeploymentUrl(props.item)"
-                       class="deployment-url"
-                       target="_blank">
-                      {{ props.item.url }}
-                    </a>
-                  </td>
-                  <td>{{ formatDateTime(props.item.created) }}</td>
-                  <td>{{ props.item.type }}</td>
-                  <td>
-                    <v-icon class="subheading mr-2"
-                            :color="getDeploymentColor(props.item)">
-                      {{getDeploymentIcon(props.item)}}
-                    </v-icon>
-                    <span>{{ props.item.state }}</span>
-                  </td>
+                  <tr @mouseover="activeRow = props.item"
+                      @mouseleave="activeRow = null">
+                    <td>
+                      <a :href="getDeploymentUrl(props.item)"
+                         class="deployment-url"
+                         target="_blank">
+                        {{ props.item.url }}
+                      </a>
+                    </td>
+                    <td class="column-date text-xs-center">{{ formatDateTime(props.item.created) }}</td>
+                    <td class="column-type text-xs-center">{{ props.item.type }}</td>
+                    <td class="column-state text-xs-center">
+                      <v-icon class="subheading mr-2"
+                              :color="getDeploymentColor(props.item)">
+                        {{getDeploymentIcon(props.item)}}
+                      </v-icon>
+                      <span>{{ props.item.state }}</span>
+                    </td>
+                    <td class="column-delete text-xs-center">
+                      <delete-dialog entity="deployment"
+                                     @confirm="deleteDeployment(props.item)">
+                        <v-btn icon
+                               slot="activator">
+                          <v-icon color="red">close</v-icon>
+                        </v-btn>
+                      </delete-dialog>
+                    </td>
+                  </tr>
                 </template>
               </v-data-table>
             </v-card>
@@ -46,6 +58,7 @@
 
 <script>
   import moment from 'moment'
+  import DeleteDialog from '~/components/DeleteDialog'
 
   export default {
     asyncData ({ store }) {
@@ -53,9 +66,13 @@
         return store.dispatch('loadDeployments')
       }
     },
+    components: {
+      DeleteDialog
+    },
     data () {
       return {
         activePanels: [true],
+        activeRow: null,
         pagination: {
           rowsPerPage: 10
         }
@@ -87,14 +104,20 @@
       }
     },
     methods: {
+      deleteDeployment (deployment) {
+        this.$store.dispatch('deleteDeployment', deployment)
+      },
       formatDateTime (value) {
         return moment(parseInt(value, 10)).format('LLL')
       },
       getDeploymentColor (deployment) {
         switch (deployment.state) {
           case 'BUILD_ERROR':
+          case 'DEPLOYMENT_ERROR':
             return 'red'
           case 'DEPLOYING':
+          case 'BOOTED':
+          case 'BUILDING':
             return 'orange'
           case 'FROZEN':
             return 'blue'
@@ -105,8 +128,11 @@
       getDeploymentIcon (deployment) {
         switch (deployment.state) {
           case 'BUILD_ERROR':
+          case 'DEPLOYMENT_ERROR':
             return 'cloud_off'
           case 'DEPLOYING':
+          case 'BOOTED':
+          case 'BUILDING':
             return 'cloud_upload'
           case 'FROZEN':
             return 'cloud_queue'
@@ -137,5 +163,21 @@
   .deployment-url {
     text-decoration: none;
     color: inherit;
+  }
+
+  .column-date {
+    width: 20em;
+  }
+
+  .column-type {
+    width: 8em;
+  }
+
+  .column-state {
+    width: 16em;
+  }
+
+  .column-delete {
+    width: 8em;
   }
 </style>
