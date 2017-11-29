@@ -4,6 +4,19 @@
                          fixed
                          :clipped="isDrawerClipped"
                          v-model="drawer">
+      <v-list>
+        <v-list-tile :exact="index === 0"
+                     :to="item"
+                     :key="item.name"
+                     v-for="(item, index) in menu">
+          <v-list-tile-action>
+            <v-icon>widgets</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{item.name}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
     </v-navigation-drawer>
     <v-toolbar app
                dense
@@ -31,6 +44,9 @@
     computed: {
       isDrawerClipped () {
         return this.$vuetify.breakpoint.width > 1264
+      },
+      menu () {
+        return this.$router.options.routes
       }
     },
     methods: {

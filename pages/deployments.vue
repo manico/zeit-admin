@@ -3,6 +3,7 @@
     <v-layout>
       <v-flex>
         <v-expansion-panel popout
+                           expand
                            focusable>
           <v-expansion-panel-content :key="project.name"
                                      :class="[panelClass(index)]"
@@ -16,10 +17,22 @@
                             :pagination.sync="pagination">
                 <template slot="items"
                           slot-scope="props">
-                  <td>{{ props.item.url }}</td>
+                  <td>
+                    <a :href="getDeploymentUrl(props.item)"
+                       class="deployment-url"
+                       target="_blank">
+                      {{ props.item.url }}
+                    </a>
+                  </td>
                   <td>{{ formatDateTime(props.item.created) }}</td>
                   <td>{{ props.item.type }}</td>
-                  <td>{{ props.item.state }}</td>
+                  <td>
+                    <v-icon class="subheading mr-2"
+                            :color="getDeploymentColor(props.item)">
+                      {{getDeploymentIcon(props.item)}}
+                    </v-icon>
+                    <span>{{ props.item.state }}</span>
+                  </td>
                 </template>
               </v-data-table>
             </v-card>
@@ -35,7 +48,8 @@
 
   export default {
     asyncData ({ store }) {
-      return store.dispatch('getDeployments')
+      const requiresData = !store.getters.deploymentProjects.length
+      if (requiresData) return store.dispatch('getDeployments')
     },
     data () {
       return {
@@ -46,9 +60,44 @@
         }
       }
     },
+    head () {
+      return {
+        title: 'Deployments',
+        meta: [
+          { hid: 'description', name: 'description', content: 'List all the deployments under the account corresponding to the API token.' }
+        ]
+      }
+    },
     methods: {
       formatDateTime (value) {
         return moment(parseInt(value, 10)).format('LLL')
+      },
+      getDeploymentColor (deployment) {
+        switch (deployment.state) {
+          case 'BUILD_ERROR':
+            return 'red'
+          case 'DEPLOYING':
+            return 'orange'
+          case 'FROZEN':
+            return 'blue'
+          default:
+            return 'green'
+        }
+      },
+      getDeploymentIcon (deployment) {
+        switch (deployment.state) {
+          case 'BUILD_ERROR':
+            return 'cloud_off'
+          case 'DEPLOYING':
+            return 'cloud_upload'
+          case 'FROZEN':
+            return 'cloud_queue'
+          default:
+            return 'cloud'
+        }
+      },
+      getDeploymentUrl (deployment) {
+        return `https://${deployment.url}`
       },
       getProjectDeployments (project) {
         return this.$store.getters.deployments(project)
@@ -65,3 +114,10 @@
     }
   }
 </script>
+
+<style scoped>
+  .deployment-url {
+    text-decoration: none;
+    color: inherit;
+  }
+</style>
