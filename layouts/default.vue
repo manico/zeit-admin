@@ -15,9 +15,7 @@
       <v-spacer></v-spacer>
     </v-toolbar>
     <v-content>
-      <v-container fluid>
-        <nuxt/>
-      </v-container>
+      <nuxt/>
     </v-content>
     <v-footer app></v-footer>
   </v-app>
