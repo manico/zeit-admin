@@ -1,5 +1,6 @@
 <template>
-  <v-container fluid>
+  <v-container fluid
+               class="deployments">
     <v-layout>
       <v-flex>
         <v-expansion-panel popout
@@ -10,7 +11,10 @@
                                      :class="[panelClass(index)]"
                                      v-model="activePanels[index]"
                                      v-for="(project, index) in deploymentProjects">
-            <div slot="header">{{project.name}}</div>
+            <div slot="header">
+              <v-icon class="mr-2">toc</v-icon>
+              <span>{{project.name}}</span>
+            </div>
             <v-card>
               <v-data-table dark
                             hide-headers
@@ -20,6 +24,12 @@
                           slot-scope="props">
                   <tr @mouseover="activeRow = props.item"
                       @mouseleave="activeRow = null">
+                    <td class="column-scale text-xs-center pr-0">
+                      <v-progress-circular :size="24"
+                                           :value="getDeploymentScaleProgress(props.item)"
+                                           :color="getDeploymentScaleColor(props.item)">
+                      </v-progress-circular>
+                    </td>
                     <td>
                       <a :href="getDeploymentUrl(props.item)"
                          class="deployment-url"
@@ -38,6 +48,7 @@
                     </td>
                     <td class="column-delete text-xs-center">
                       <delete-dialog entity="deployment"
+                                     v-show="activeRow === props.item"
                                      @confirm="deleteDeployment(props.item)">
                         <v-btn icon
                                slot="activator">
@@ -143,6 +154,28 @@
       getDeploymentUrl (deployment) {
         return `https://${deployment.url}`
       },
+      getDeploymentScaleColor (deployment) {
+        const scale = deployment.scale
+        if (scale && scale.current > 0) {
+          const diff = scale.max - scale.min
+          const progress = Math.ceil((scale.current / diff) * 100)
+          if (progress >= 50) {
+            return 'orange'
+          } else if (progress >= 75) {
+            return 'red'
+          }
+        }
+
+        return 'green'
+      },
+      getDeploymentScaleProgress (deployment) {
+        const scale = deployment.scale
+        if (scale && scale.current > 0) {
+          return Math.ceil((scale.current / scale.max) * 100)
+        }
+
+        return 0
+      },
       getProjectDeployments (project) {
         return this.$store.getters.deployments(project)
       },
@@ -158,26 +191,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .deployment-url {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .column-date {
-    width: 20em;
-  }
-
-  .column-type {
-    width: 8em;
-  }
-
-  .column-state {
-    width: 16em;
-  }
-
-  .column-delete {
-    width: 8em;
-  }
-</style>
