@@ -1,6 +1,8 @@
+import _assign from 'lodash/assign'
 import _isNil from 'lodash/isNil'
 import _isUndefined from 'lodash/isUndefined'
 import _each from 'lodash/each'
+import _find from 'lodash/find'
 import _findIndex from 'lodash/findIndex'
 import Vue from 'vue'
 import types from './mutationTypes'
@@ -21,5 +23,9 @@ export default {
   },
   [types.SET_ERROR] (state, error) {
     state.error = _isUndefined(error) ? null : error
+  },
+  [types.UPDATE_DEPLOYMENT] (state, { deployment }) {
+    const existingDeployment = _find(state.deployments, { uid: deployment.uid })
+    _assign(existingDeployment, deployment)
   }
 }

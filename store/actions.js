@@ -1,20 +1,23 @@
+import _isNil from 'lodash/isNil'
 import api from '~/api'
 import types from './mutationTypes'
 
 export default {
-  deleteDeployment ({ commit, getters }, deployment) {
+  deleteDeployment (store, deployment) {
     return api.now.deployments.deleteDeployment(
-      getters.authToken.value,
+      store.getters.authToken.value,
       deployment
     ).then((result) => {
-      commit(types.DELETE_DEPLOYMENT, result)
-      commit(types.SET_ERROR, result.error)
+      store.commit(types.DELETE_DEPLOYMENT, result)
+      store.dispatch('setError', result.error)
     })
   },
-  loadDeployments ({ commit, getters }) {
-    return api.now.deployments.getDeployments(getters.authToken.value).then((result) => {
-      commit(types.SET_DEPLOYMENTS, result)
-      commit(types.SET_ERROR, result.error)
+  loadDeployments (store) {
+    return api.now.deployments.getDeployments(
+      store.getters.authToken.value
+    ).then((result) => {
+      store.commit(types.SET_DEPLOYMENTS, result)
+      store.dispatch('setError', result.error)
     })
   },
   setAuthToken ({ commit }, token) {
@@ -23,6 +26,17 @@ export default {
     })
   },
   setError ({ commit }, error) {
-    commit(types.SET_ERROR, error)
+    if (!_isNil(error)) {
+      commit(types.SET_ERROR, error)
+    }
+  },
+  updateDeployment (store, deployment) {
+    return api.now.deployments.getDeployment(
+      store.getters.authToken.value,
+      deployment
+    ).then((result) => {
+      store.commit(types.UPDATE_DEPLOYMENT, result)
+      store.dispatch('setError', result.error)
+    })
   }
 }

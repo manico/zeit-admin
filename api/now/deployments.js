@@ -33,6 +33,24 @@ export default {
       return error.response.data
     })
   },
+  getDeployment (authToken, deployment) {
+    return http.get(`/now/deployments/${deployment.uid}`, {
+      headers: {
+        authorization: `Bearer ${authToken}`
+      }
+    }).then((response) => {
+      const result = response.data
+
+      return {
+        deployment: {
+          uid: result.uid,
+          state: result.state
+        }
+      }
+    }).catch((error) => {
+      return error.response.data
+    })
+  },
   getDeployments (authToken) {
     return http.get('/now/deployments', {
       headers: {

@@ -46,15 +46,20 @@
                       </v-icon>
                       <span>{{ props.item.state }}</span>
                     </td>
-                    <td class="column-delete text-xs-center">
-                      <delete-dialog entity="deployment"
-                                     v-show="activeRow === props.item"
-                                     @confirm="deleteDeployment(props.item)">
+                    <td class="column-actions text-xs-center">
+                      <div v-show="activeRow === props.item">
                         <v-btn icon
-                               slot="activator">
-                          <v-icon color="red">close</v-icon>
+                               @click="updateDeployment(props.item)">
+                          <v-icon>refresh</v-icon>
                         </v-btn>
-                      </delete-dialog>
+                        <delete-dialog entity="deployment"
+                                       @confirm="deleteDeployment(props.item)">
+                          <v-btn icon
+                                 slot="activator">
+                            <v-icon color="red">close</v-icon>
+                          </v-btn>
+                        </delete-dialog>
+                      </div>
                     </td>
                   </tr>
                 </template>
@@ -187,6 +192,9 @@
       },
       panelClass (index) {
         return this.isFirstActivePanel(index) ? 'mt-0' : null
+      },
+      updateDeployment (deployment) {
+        this.$store.dispatch('updateDeployment', deployment)
       }
     }
   }
