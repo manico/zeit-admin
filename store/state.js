@@ -1,7 +1,7 @@
 export default {
   auth: {
     tokens: [
-      { name: 'default', value: 'ZI469WxkVKBiw1sjrtY7m6SB', active: true }
+      { name: 'default', value: 'NHn7hsxYpqtePquExcikQZxR', active: true }
     ]
   },
   error: null,
