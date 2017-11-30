@@ -1,12 +1,12 @@
 <template>
   <v-container fluid
-               class="deployments">
+               class="deployments"
+               v-if="isLoaded">
     <v-layout>
       <v-flex>
         <v-expansion-panel popout
                            expand
-                           focusable
-                           v-if="deploymentProjects">
+                           focusable>
           <v-expansion-panel-content :key="project.name"
                                      :class="[panelClass(index)]"
                                      v-model="activePanels[index]"
@@ -26,6 +26,7 @@
                       @mouseleave="activeRow = null">
                     <td class="column-scale text-xs-center pr-0">
                       <v-tooltip top
+                                 lazy
                                  :disabled="!props.item.scale">
                         <v-progress-circular :size="24"
                                              :value="getDeploymentScaleProgress(props.item)"
@@ -83,7 +84,7 @@
 
   export default {
     asyncData ({ store }) {
-      if (!store.getters.deploymentProjects.length) {
+      if (store.getters.authorization && !store.getters.deploymentProjects.length) {
         return store.dispatch('loadDeployments')
       }
     },
@@ -112,15 +113,18 @@
       }
     },
     computed: {
-      authToken () {
-        return this.$store.getters.authToken
+      authorization () {
+        return this.$store.getters.authorization
       },
       deploymentProjects () {
         return this.$store.getters.deploymentProjects
+      },
+      isLoaded () {
+        return this.authorization && this.deploymentProjects.length
       }
     },
     watch: {
-      authToken () {
+      authorization () {
         this.loadDeployments()
       }
     },

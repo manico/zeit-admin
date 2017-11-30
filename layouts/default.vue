@@ -17,6 +17,7 @@
       <toolbar-menu></toolbar-menu>
     </v-toolbar>
     <v-content>
+      <authorization-alert class="ma-4"></authorization-alert>
       <nuxt/>
       <global-snackbar></global-snackbar>
     </v-content>
@@ -28,12 +29,14 @@
   import MainMenu from '~/components/MainMenu'
   import ToolbarMenu from '~/components/ToolbarMenu'
   import GlobalSnackbar from '~/components/GlobalSnackbar'
+  import AuthorizationAlert from '~/components/AuthorizationAlert'
 
   export default {
     components: {
       MainMenu,
       ToolbarMenu,
-      GlobalSnackbar
+      GlobalSnackbar,
+      AuthorizationAlert
     },
     data () {
       return {

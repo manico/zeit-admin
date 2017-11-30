@@ -1,6 +1,7 @@
 <template>
   <v-dialog v-model="dialog"
             persistent
+            lazy
             max-width="320">
     <slot name="activator"
           slot="activator">

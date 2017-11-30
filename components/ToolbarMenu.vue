@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="toolbar-menu">
     <v-btn icon>
       <v-icon>search</v-icon>
     </v-btn>
@@ -9,12 +9,17 @@
              slot="activator">
         <v-icon>account_circle</v-icon>
       </v-btn>
-      <v-card>
+      <v-card class="toolbar-menu-tokens">
         <v-card-title class="headline">
-          API Tokens
+          <span class="mr-4">Autorization Tokens</span>
+          <v-spacer></v-spacer>
+          <auth-tokens-dialog :active="authTokensDialog"
+                              @input="setAuthTokensDialog">
+          </auth-tokens-dialog>
         </v-card-title>
         <v-divider></v-divider>
-        <v-list two-line>
+        <v-list two-line
+                v-if="authTokens.length">
           <v-list-tile v-for="item in authTokens"
                        :key="item.name"
                        @click="setAuthToken(item)">
@@ -27,21 +32,33 @@
             </v-list-tile-avatar>
           </v-list-tile>
         </v-list>
-        <v-card-actions>
-          <v-btn block
-                 color="red">
-            Manage tokens
+        <div class="text-xs-center pa-4"
+             v-if="!authTokens.length">
+          <v-btn outline
+                 large
+                 fab
+                 color="grey darken-2"
+                 @click="setAuthTokensDialog(true)">
+            <v-icon>person_add</v-icon>
           </v-btn>
-        </v-card-actions>
+        </div>
       </v-card>
     </v-menu>
   </div>
 </template>
 
 <script>
+  import AuthTokensDialog from '~/components/AuthTokensDialog'
+  import AuthorizationAlert from '~/components/AuthorizationAlert'
+
   export default {
+    components: {
+      AuthTokensDialog,
+      AuthorizationAlert
+    },
     data () {
       return {
+        authTokensDialog: false
       }
     },
     computed: {
@@ -52,6 +69,9 @@
     methods: {
       setAuthToken (token) {
         this.$store.dispatch('setAuthToken', token)
+      },
+      setAuthTokensDialog (value) {
+        this.authTokensDialog = value
       }
     }
   }

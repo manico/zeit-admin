@@ -3,21 +3,43 @@ import api from '~/api'
 import types from './mutationTypes'
 
 export default {
+  addAuthToken (store, token) {
+    const existingToken = store.getters.authTokenByName(token.name)
+
+    if (_isNil(existingToken)) {
+      if (!store.getters.authTokens) {
+        token.active = true
+      }
+
+      store.commit(types.ADD_AUTH_TOKEN, {
+        token
+      })
+    } else {
+      store.dispatch('setError', {
+        message: 'Authorization token name already exists'
+      })
+    }
+  },
+  deleteAuthToken ({ commit }, token) {
+    commit(types.DELETE_AUTH_TOKEN, {
+      token
+    })
+  },
   deleteDeployment (store, deployment) {
     return api.now.deployments.deleteDeployment(
-      store.getters.authToken.value,
+      store.getters.authorization,
       deployment
     ).then((result) => {
       store.commit(types.DELETE_DEPLOYMENT, result)
-      store.dispatch('setError', result.error)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },
   loadDeployments (store) {
     return api.now.deployments.getDeployments(
-      store.getters.authToken.value
+      store.getters.authorization
     ).then((result) => {
       store.commit(types.SET_DEPLOYMENTS, result)
-      store.dispatch('setError', result.error)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },
   setAuthToken ({ commit }, token) {
@@ -26,17 +48,15 @@ export default {
     })
   },
   setError ({ commit }, error) {
-    if (!_isNil(error)) {
-      commit(types.SET_ERROR, error)
-    }
+    commit(types.SET_ERROR, error)
   },
   updateDeployment (store, deployment) {
     return api.now.deployments.getDeployment(
-      store.getters.authToken.value,
+      store.getters.authorization,
       deployment
     ).then((result) => {
       store.commit(types.UPDATE_DEPLOYMENT, result)
-      store.dispatch('setError', result.error)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   }
 }

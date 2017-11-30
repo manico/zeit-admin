@@ -20,10 +20,10 @@ const parseDeploymentProjects = (deployments) => {
 }
 
 export default {
-  deleteDeployment (authToken, deployment) {
+  deleteDeployment (authorization, deployment) {
     return http.delete(`/now/deployments/${deployment.uid}`, {
       headers: {
-        authorization: `Bearer ${authToken}`
+        authorization
       }
     }).then((response) => {
       return {
@@ -33,10 +33,10 @@ export default {
       return error.response.data
     })
   },
-  getDeployment (authToken, deployment) {
+  getDeployment (authorization, deployment) {
     return http.get(`/now/deployments/${deployment.uid}`, {
       headers: {
-        authorization: `Bearer ${authToken}`
+        authorization
       }
     }).then((response) => {
       const result = response.data
@@ -51,10 +51,10 @@ export default {
       return error.response.data
     })
   },
-  getDeployments (authToken) {
+  getDeployments (authorization) {
     return http.get('/now/deployments', {
       headers: {
-        authorization: `Bearer ${authToken}`
+        authorization
       }
     }).then((response) => {
       const deployments = parseDeployments(response.data)

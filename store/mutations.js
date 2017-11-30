@@ -8,6 +8,13 @@ import Vue from 'vue'
 import types from './mutationTypes'
 
 export default {
+  [types.ADD_AUTH_TOKEN] (state, { token }) {
+    state.auth.tokens.push(token)
+  },
+  [types.DELETE_AUTH_TOKEN] (state, { token }) {
+    const deleteIndex = _findIndex(state.auth.tokens, { name: token.name })
+    Vue.delete(state.auth.tokens, deleteIndex)
+  },
   [types.DELETE_DEPLOYMENT] (state, { deployment }) {
     const deleteIndex = _findIndex(state.deployments, { uid: deployment.uid })
     Vue.delete(state.deployments, deleteIndex)

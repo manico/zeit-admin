@@ -14,7 +14,6 @@
 </template>
 
 <script>
-  import _isFunction from 'lodash/isFunction'
   import _isNull from 'lodash/isNull'
 
   export default {
@@ -36,11 +35,10 @@
     methods: {
       close () {
         this.$store.dispatch('setError')
+        this.snackbar = false
       },
-      onTimeout (value) {
-        if (_isFunction(this.closeError)) {
-          this.closeError()
-        }
+      onTimeout () {
+        this.$store.dispatch('setError')
       }
     }
   }
