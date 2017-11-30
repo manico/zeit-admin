@@ -22,9 +22,10 @@ module.exports = {
   },
   build: {
     vendor: [
-      'vuetify',
       'axios',
-      'lodash'
+      'lodash',
+      'moment',
+      'vuetify'
     ],
     extend (config, ctx) {
       if (ctx.dev && ctx.isClient) {
