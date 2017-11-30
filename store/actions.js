@@ -7,7 +7,7 @@ export default {
     const existingToken = store.getters.authTokenByName(token.name)
 
     if (_isNil(existingToken)) {
-      if (!store.getters.authTokens) {
+      if (!store.getters.authorization) {
         token.active = true
       }
 
