@@ -25,10 +25,15 @@
                   <tr @mouseover="activeRow = props.item"
                       @mouseleave="activeRow = null">
                     <td class="column-scale text-xs-center pr-0">
-                      <v-progress-circular :size="24"
-                                           :value="getDeploymentScaleProgress(props.item)"
-                                           :color="getDeploymentScaleColor(props.item)">
-                      </v-progress-circular>
+                      <v-tooltip top
+                                 :disabled="!props.item.scale">
+                        <v-progress-circular :size="24"
+                                             :value="getDeploymentScaleProgress(props.item)"
+                                             :color="getDeploymentScaleColor(props.item)"
+                                             slot="activator">
+                        </v-progress-circular>
+                        <span>Instances {{props.item.scale.current}}/{{props.item.scale.max}}</span>
+                      </v-tooltip>
                     </td>
                     <td>
                       <a :href="getDeploymentUrl(props.item)"
@@ -164,9 +169,9 @@
         if (scale && scale.current > 0) {
           const diff = scale.max - scale.min
           const progress = Math.ceil((scale.current / diff) * 100)
-          if (progress >= 50) {
-            return 'orange'
-          } else if (progress >= 75) {
+          if (progress >= 75) {
+            return 'red'
+          } else if (progress >= 50) {
             return 'red'
           }
         }

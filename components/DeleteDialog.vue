@@ -9,6 +9,7 @@
       <v-card-title class="headline">
         Confirm delete
       </v-card-title>
+      <v-divider></v-divider>
       <v-card-text>
         Are you sure you wish to delete {{entity}}? This action is not reversable.
       </v-card-text>

@@ -9,19 +9,31 @@
              slot="activator">
         <v-icon>account_circle</v-icon>
       </v-btn>
-      <v-list two-line>
-        <v-list-tile v-for="item in authTokens"
-                     :key="item.name"
-                     @click="setAuthToken(item)">
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ item.value }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-avatar v-if="item.active">
-            <v-icon color="green">check_circle</v-icon>
-          </v-list-tile-avatar>
-        </v-list-tile>
-      </v-list>
+      <v-card>
+        <v-card-title class="headline">
+          API Tokens
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-list two-line>
+          <v-list-tile v-for="item in authTokens"
+                       :key="item.name"
+                       @click="setAuthToken(item)">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ item.value }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-avatar v-if="item.active">
+              <v-icon color="green">check_circle</v-icon>
+            </v-list-tile-avatar>
+          </v-list-tile>
+        </v-list>
+        <v-card-actions>
+          <v-btn block
+                 color="red">
+            Manage tokens
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-menu>
   </div>
 </template>
