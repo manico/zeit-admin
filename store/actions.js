@@ -20,6 +20,33 @@ export default {
       })
     }
   },
+  addDeploymentAlias (store, { deployment, alias }) {
+    return api.now.deployments.addDeploymentAlias(
+      store.getters.authorization,
+      deployment,
+      alias
+    ).then((result) => {
+      if (_isNil(result.error)) {
+        store.commit(types.ADD_DEPLOYMENT_ALIAS, {
+          deployment,
+          alias
+        })
+      } else {
+        store.dispatch('setError', result.error)
+      }
+
+      return result
+    })
+  },
+  deleteAlias (store, alias) {
+    return api.now.aliases.deleteAlias(
+      store.getters.authorization,
+      alias
+    ).then((result) => {
+      store.commit(types.DELETE_ALIAS, result)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
+    })
+  },
   deleteAuthToken ({ commit }, token) {
     commit(types.DELETE_AUTH_TOKEN, {
       token
@@ -34,11 +61,43 @@ export default {
       if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },
+  deleteDeploymentAlias (store, { deployment, alias }) {
+    return api.now.aliases.deleteAlias(
+      store.getters.authorization,
+      alias
+    ).then((result) => {
+      store.commit(types.DELETE_DEPLOYMENT_ALIAS, {
+        deployment,
+        alias: result.alias
+      })
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
+    })
+  },
+  loadAliases (store) {
+    return api.now.aliases.getAliases(
+      store.getters.authorization
+    ).then((result) => {
+      store.commit(types.SET_ALIASES, result)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
+    })
+  },
   loadDeployments (store) {
     return api.now.deployments.getDeployments(
       store.getters.authorization
     ).then((result) => {
       store.commit(types.SET_DEPLOYMENTS, result)
+      if (!_isNil(result.error)) store.dispatch('setError', result.error)
+    })
+  },
+  loadDeploymentAliases (store, deployment) {
+    return api.now.deployments.getDeploymentAliases(
+      store.getters.authorization,
+      deployment
+    ).then((result) => {
+      store.commit(types.SET_DEPLOYMENT_ALIASES, {
+        deployment,
+        aliases: result.aliases
+      })
       if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },

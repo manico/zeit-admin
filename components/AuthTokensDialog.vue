@@ -21,6 +21,7 @@
                     sm4>
               <v-text-field box
                             required
+                            autocomplete="off"
                             name="name"
                             color="orange"
                             label="Name"
@@ -33,6 +34,7 @@
                     sm8>
               <v-text-field box
                             required
+                            autocomplete="off"
                             name="value"
                             color="orange"
                             label="Authorization token"
@@ -78,7 +80,8 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat
-               @click.native="close">Close</v-btn>
+               @click.native="close">Close
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

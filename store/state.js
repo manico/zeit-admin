@@ -1,4 +1,5 @@
 export default {
+  aliases: [],
   auth: {
     tokens: [
       { name: 'default', value: 'NHn7hsxYpqtePquExcikQZxR', active: true }
