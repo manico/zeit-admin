@@ -1,9 +1,7 @@
 @require './scrollbar.styl'
 
 .fileview
-    max-height: 600px
-    overflow: auto
-    scrollbar()
+    position: relative
 
   pre
     background: transparent
@@ -19,3 +17,13 @@
 
   .fileview-icon
     min-width: 32px
+
+  .fileview-content 
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    padding: 1em
+    overflow: auto
+    scrollbar()

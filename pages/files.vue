@@ -1,10 +1,11 @@
 <template>
   <v-container fluid
-               grid-list-lg>
-    <v-layout row
-              wrap>
-      <v-flex xs12
-              mb-4
+               fill-height
+               grid-list-lg
+               pb-2>
+    <v-layout column>
+      <v-flex d-flex
+              style="flex-grow:0"
               v-if="deployment">
         <v-select autocomplete
                   spellcheck="false"
@@ -18,55 +19,63 @@
                   persistent-hint>
         </v-select>
       </v-flex>
-      <v-flex xs12
-              md4
-              lg3>
-        <v-progress-linear :indeterminate="true"
-                           height="2"
-                           class="ma-0"
-                           color="red"
-                           v-if="loadingFiles">
-        </v-progress-linear>
-        <v-list dense
-                v-if="files.length">
-          <v-list-group v-for="item in files"
-                        v-model="item.isActive"
-                        :key="item.name">
-            <v-list-tile slot="item"
-                         @click="setFile(item)">
-              <v-list-tile-action class="fileview-icon">
-                <v-icon>{{ getFileIcon(item) }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              </v-list-tile-content>
-              <v-list-tile-action v-if="item.isFolder">
-                <v-icon>keyboard_arrow_down</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-          </v-list-group>
-        </v-list>
-      </v-flex>
-      <v-flex xs12
-              md8
-              lg9>
-        <v-card flat
-                class="fileview">
+      <v-layout d-flex
+                row
+                wrap
+                px-2>
+        <v-flex xs12
+                md4
+                lg3
+                d-flex>
           <v-progress-linear :indeterminate="true"
                              height="2"
                              class="ma-0"
                              color="red"
-                             v-if="loadingFile">
+                             v-if="loadingFiles">
           </v-progress-linear>
-          <v-card-text>
-            <pre v-if="canRenderContent"><code v-html="file.content"></code></pre>
+          <v-list dense
+                  v-if="files.length">
+            <v-list-group v-for="item in files"
+                          v-model="item.isActive"
+                          :key="item.name">
+              <v-list-tile slot="item"
+                           @click="setFile(item)">
+                <v-list-tile-action class="fileview-icon">
+                  <v-icon>{{ getFileIcon(item) }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                </v-list-tile-content>
+                <v-list-tile-action v-if="item.isFolder">
+                  <v-icon>keyboard_arrow_down</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list-group>
+          </v-list>
+        </v-flex>
+        <v-flex xs12
+                md8
+                lg9
+                d-flex>
+          <v-card flat
+                  class="fileview">
+            <v-progress-linear :indeterminate="true"
+                               height="2"
+                               class="ma-0"
+                               color="red"
+                               v-if="loadingFile">
+            </v-progress-linear>
+            <div class="fileview-content"
+                 v-if="canRenderContent">
+              <pre><code v-html="file.content"></code></pre>
+            </div>
             <div v-else
                  class="text-xs-center ma-4">
               <v-icon x-large>description</v-icon>
             </div>
-          </v-card-text>
-        </v-card>
-      </v-flex>
+          </v-card>
+        </v-flex>
+      </v-layout>
     </v-layout>
   </v-container>
 </template>
