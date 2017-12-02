@@ -38,15 +38,6 @@ export default {
       return result
     })
   },
-  deleteAlias (store, alias) {
-    return api.now.aliases.deleteAlias(
-      store.getters.authorization,
-      alias
-    ).then((result) => {
-      store.commit(types.DELETE_ALIAS, result)
-      if (!_isNil(result.error)) store.dispatch('setError', result.error)
-    })
-  },
   deleteAuthToken ({ commit }, token) {
     commit(types.DELETE_AUTH_TOKEN, {
       token
@@ -70,14 +61,6 @@ export default {
         deployment,
         alias: result.alias
       })
-      if (!_isNil(result.error)) store.dispatch('setError', result.error)
-    })
-  },
-  loadAliases (store) {
-    return api.now.aliases.getAliases(
-      store.getters.authorization
-    ).then((result) => {
-      store.commit(types.SET_ALIASES, result)
       if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },
