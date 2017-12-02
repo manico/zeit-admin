@@ -53,8 +53,10 @@
                       <span>{{ props.item.state }}</span>
                     </td>
                     <td class="column-actions text-xs-center">
-                      <div v-show="activeRow === props.item">
+                      <div v-show="activeRow === props.item || props.item.loading">
                         <v-btn icon
+                               :loading="props.item.loading"
+                               :disabled="props.item.loading"
                                @click="updateDeployment(props.item)">
                           <v-icon>refresh</v-icon>
                         </v-btn>
@@ -202,8 +204,14 @@
       panelClass (index) {
         return this.isFirstActivePanel(index) ? 'mt-0' : null
       },
+      toggleLoadingItem (deployment) {
+        this.$set(deployment, 'loading', !deployment.loading)
+      },
       updateDeployment (deployment) {
-        this.$store.dispatch('updateDeployment', deployment)
+        this.toggleLoadingItem(deployment)
+        this.$store.dispatch('updateDeployment', deployment).then(() => {
+          this.toggleLoadingItem(deployment)
+        })
       }
     }
   }
