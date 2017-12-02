@@ -3,7 +3,7 @@
             lazy
             max-width="640">
     <v-card v-if="deployment">
-      <v-progress-linear v-bind:indeterminate="true"
+      <v-progress-linear :indeterminate="true"
                          height="2"
                          class="ma-0"
                          color="red"

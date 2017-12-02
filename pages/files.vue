@@ -21,13 +21,20 @@
       <v-flex xs12
               md4
               lg3>
-        <v-list>
+        <v-progress-linear :indeterminate="true"
+                           height="2"
+                           class="ma-0"
+                           color="red"
+                           v-if="loadingFiles">
+        </v-progress-linear>
+        <v-list dense
+                v-if="files.length">
           <v-list-group v-for="item in files"
                         v-model="item.isActive"
                         :key="item.name">
             <v-list-tile slot="item"
                          @click="setFile(item)">
-              <v-list-tile-action>
+              <v-list-tile-action class="fileview-icon">
                 <v-icon>{{ getFileIcon(item) }}</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
@@ -45,14 +52,18 @@
               lg9>
         <v-card flat
                 class="fileview">
-          <v-progress-linear v-bind:indeterminate="true"
+          <v-progress-linear :indeterminate="true"
                              height="2"
                              class="ma-0"
                              color="red"
                              v-if="loadingFile">
           </v-progress-linear>
           <v-card-text>
-            <pre v-if="file"><code>{{file.content}}</code></pre>
+            <pre v-if="canRenderContent"><code v-html="file.content"></code></pre>
+            <div v-else
+                 class="text-xs-center ma-4">
+              <v-icon x-large>description</v-icon>
+            </div>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -74,7 +85,9 @@
         deployment: null,
         files: [],
         file: null,
-        loadingFile: false
+        loadingFiles: false,
+        loadingFile: false,
+        worker: null
       }
     },
     head () {
@@ -86,10 +99,19 @@
             name: 'description',
             content: 'List all deployment source files'
           }
+        ],
+        link: [
+          {
+            rel: 'stylesheet',
+            href: '//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css'
+          }
         ]
       }
     },
     computed: {
+      canRenderContent () {
+        return this.file && !this.file.isFolder
+      },
       deployments () {
         return this.$store.getters.deployments()
       }
@@ -97,15 +119,18 @@
     watch: {
       deployment () {
         this.getFiles()
+        this.file = null
       }
     },
     methods: {
       getFiles () {
+        this.loadingFiles = true
         return api.now.deployments.getDeploymentFiles(
           this.$store.getters.authorization,
           this.deployment
         ).then((result) => {
           this.files = result.files
+          this.loadingFiles = false
         })
       },
       getFileContent () {
@@ -117,10 +142,19 @@
         ).then((content) => {
           this.$set(this.file, 'content', content)
           this.loadingFile = false
+
+          this.worker.postMessage(content)
         })
       },
       getFileIcon (file) {
         return file.isFolder ? (file.isActive ? 'folder_open' : 'folder') : 'description'
+      },
+      registerHighlightWorker () {
+        this.worker = new Worker('/workers/highlight.js')
+
+        this.worker.onmessage = (event) => {
+          this.$set(this.file, 'content', event.data)
+        }
       },
       setFile (file) {
         this.file = file
@@ -133,6 +167,7 @@
     mounted () {
       if (this.deployments.length) {
         this.deployment = this.deployments[0]
+        this.registerHighlightWorker()
       }
     }
   }
