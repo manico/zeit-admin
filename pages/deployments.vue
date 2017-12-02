@@ -4,6 +4,11 @@
                v-if="isLoaded">
     <v-layout>
       <v-flex>
+        <delete-dialog entity="deployment"
+                       :deletable="deletingDeployment"
+                       @cancel="deleteDeploymentCancel()"
+                       @confirm="deleteDeployment(deletingDeployment)">
+        </delete-dialog>
         <v-expansion-panel popout
                            expand
                            focusable>
@@ -55,18 +60,22 @@
                     <td class="column-actions text-xs-center">
                       <div v-show="activeRow === props.item || props.item.loading">
                         <v-btn icon
+                               class="mx-1"
                                :loading="props.item.loading"
                                :disabled="props.item.loading"
                                @click="updateDeployment(props.item)">
                           <v-icon>refresh</v-icon>
                         </v-btn>
-                        <delete-dialog entity="deployment"
-                                       @confirm="deleteDeployment(props.item)">
-                          <v-btn icon
-                                 slot="activator">
-                            <v-icon color="red">close</v-icon>
-                          </v-btn>
-                        </delete-dialog>
+                        <v-btn icon
+                               class="mx-1"
+                               @click="deleteDeploymentIntent(props.item)">
+                          <v-icon color="red">close</v-icon>
+                        </v-btn>
+                        <v-btn icon
+                               class="mx-1"
+                               @click="showDeploymentAliases(props.item)">
+                          <v-icon color="green">language</v-icon>
+                        </v-btn>
                       </div>
                     </td>
                   </tr>
@@ -97,6 +106,7 @@
       return {
         activePanels: [true],
         activeRow: null,
+        deletingDeployment: null,
         pagination: {
           rowsPerPage: 10
         }
@@ -132,7 +142,15 @@
     },
     methods: {
       deleteDeployment (deployment) {
-        this.$store.dispatch('deleteDeployment', deployment)
+        this.$store.dispatch('deleteDeployment', deployment).then(() => {
+          this.deleteDeploymentCancel()
+        })
+      },
+      deleteDeploymentCancel () {
+        this.deletingDeployment = null
+      },
+      deleteDeploymentIntent (deployment) {
+        this.deletingDeployment = deployment
       },
       formatDateTime (value) {
         return moment(parseInt(value, 10)).format('LLL')

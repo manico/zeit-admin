@@ -26,6 +26,8 @@
 </template>
 
 <script>
+  import _isNil from 'lodash/isNil'
+
   export default {
     data () {
       return {
@@ -33,18 +35,27 @@
       }
     },
     props: {
+      deletable: {
+        type: Object
+      },
       entity: {
         type: String,
         required: true
       }
     },
+    watch: {
+      deletable (value) {
+        this.dialog = !_isNil(value)
+      }
+    },
     methods: {
       close () {
+        this.$emit('cancel')
         this.dialog = false
       },
       confirm () {
         this.$emit('confirm')
-        this.close()
+        this.dialog = false
       }
     }
   }
