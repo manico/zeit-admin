@@ -51,7 +51,7 @@
                         {{ props.item.url }}
                       </a>
                     </td>
-                    <td class="column-date text-xs-center">{{ formatDateTimeFromTimestamp(props.item.created) }}</td>
+                    <td class="column-date text-xs-center">{{ formatDateTime(props.item.created) }}</td>
                     <td class="column-type text-xs-center">{{ props.item.type }}</td>
                     <td class="column-state text-xs-center">
                       <v-icon class="subheading mr-2"
@@ -166,10 +166,6 @@
       },
       deleteDeploymentIntent (deployment) {
         this.deletingDeployment = deployment
-      },
-      formatDateTimeFromTimestamp (value) {
-        // Zeit returns timestamp as string here
-        return this.formatDateTime(parseInt(value, 10))
       },
       getDeploymentColor (deployment) {
         switch (deployment.state) {

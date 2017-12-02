@@ -1,5 +1,5 @@
-import _map from 'lodash/map'
 import _assign from 'lodash/assign'
+import _map from 'lodash/map'
 import _orderBy from 'lodash/orderBy'
 import _uniqBy from 'lodash/uniqBy'
 import http from '~/api/http'
@@ -14,7 +14,9 @@ const parseAliases = (result) => {
 
 const parseDeployments = (result) => {
   if (result.deployments) {
-    return _orderBy(result.deployments, [n => parseInt(n.created, 10)], ['desc'])
+    return _orderBy(_map(result.deployments, n => _assign(n, {
+      created: parseInt(n.created, 10)
+    })), ['created'], ['desc'])
   }
 
   return []
