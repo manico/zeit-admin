@@ -30,6 +30,16 @@ const parseDeploymentProjects = (deployments) => {
   }), ['name'], ['asc'])
 }
 
+const parseFiles = (result) => {
+  if (result) {
+    return _orderBy(_map(result, n => _assign(n, {
+      isFolder: n.type === 'directory'
+    })), ['isFolder', 'name'], ['desc', 'asc'])
+  }
+
+  return []
+}
+
 export default {
   addDeploymentAlias (authorization, deployment, alias) {
     return http.post(`/now/deployments/${deployment.uid}/aliases`, alias, {
@@ -86,6 +96,32 @@ export default {
       return {
         aliases
       }
+    }).catch((error) => {
+      return error.response.data
+    })
+  },
+  getDeploymentFiles (authorization, deployment) {
+    return http.get(`/now/deployments/${deployment.uid}/files`, {
+      headers: {
+        authorization
+      }
+    }).then((response) => {
+      const files = parseFiles(response.data)
+      return {
+        files
+      }
+    }).catch((error) => {
+      return error.response.data
+    })
+  },
+  getDeploymentFileContent (authorization, deployment, file) {
+    return http.get(`/now/deployments/${deployment.uid}/files/${file.uid}`, {
+      headers: {
+        authorization
+      }
+    }).then((response) => {
+      const content = response.data
+      return content
     }).catch((error) => {
       return error.response.data
     })
