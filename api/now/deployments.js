@@ -33,7 +33,8 @@ const parseDeploymentProjects = (deployments) => {
 const parseFiles = (result) => {
   if (result) {
     return _orderBy(_map(result, n => _assign(n, {
-      isFolder: n.type === 'directory'
+      isFolder: n.type === 'directory',
+      children: parseFiles(n.children)
     })), ['isFolder', 'name'], ['desc', 'asc'])
   }
 
