@@ -4,6 +4,11 @@ import types from './mutationTypes'
 
 export default {
   nuxtServerInit (store) {
+    if (process.server) {
+      const confidential = require('~/confidential.json')
+      store.commit(types.SET_AUTH_TOKENS, confidential)
+    }
+
     api.http.interceptors.request.use(api.interceptor(store))
   },
   addAuthToken (store, token) {

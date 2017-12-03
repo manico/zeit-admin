@@ -1,10 +1,7 @@
 export default {
   aliases: [],
   auth: {
-    tokens: [
-      { name: 'default', value: 'NHn7hsxYpqtePquExcikQZxR', active: true },
-      { name: 'invalid', value: 'NHn7hsxYpqtePquExcikQZxP' }
-    ]
+    tokens: []
   },
   error: null,
   deployments: [],

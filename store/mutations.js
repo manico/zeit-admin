@@ -43,6 +43,9 @@ export default {
       n.active = n.name === token.name
     })
   },
+  [types.SET_AUTH_TOKENS] (state, { tokens }) {
+    Vue.set(state.auth, 'tokens', tokens)
+  },
   [types.SET_DEPLOYMENTS] (state, { deploymentProjects, deployments }) {
     state.deployments = _isNil(deployments) ? [] : deployments
     state.deploymentProjects = _isNil(deploymentProjects) ? [] : deploymentProjects
