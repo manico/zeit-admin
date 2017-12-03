@@ -3,6 +3,9 @@ import api from '~/api'
 import types from './mutationTypes'
 
 export default {
+  nuxtServerInit (store) {
+    api.http.interceptors.request.use(api.interceptor(store))
+  },
   addAuthToken (store, token) {
     const existingToken = store.getters.authTokenByName(token.name)
 
@@ -22,7 +25,6 @@ export default {
   },
   addDeploymentAlias (store, { deployment, alias }) {
     return api.now.deployments.addDeploymentAlias(
-      store.getters.authorization,
       deployment,
       alias
     ).then((result) => {
@@ -45,7 +47,6 @@ export default {
   },
   deleteDeployment (store, deployment) {
     return api.now.deployments.deleteDeployment(
-      store.getters.authorization,
       deployment
     ).then((result) => {
       store.commit(types.DELETE_DEPLOYMENT, result)
@@ -54,7 +55,6 @@ export default {
   },
   deleteDeploymentAlias (store, { deployment, alias }) {
     return api.now.aliases.deleteAlias(
-      store.getters.authorization,
       alias
     ).then((result) => {
       store.commit(types.DELETE_DEPLOYMENT_ALIAS, {
@@ -65,16 +65,13 @@ export default {
     })
   },
   loadDeployments (store) {
-    return api.now.deployments.getDeployments(
-      store.getters.authorization
-    ).then((result) => {
+    return api.now.deployments.getDeployments().then((result) => {
       store.commit(types.SET_DEPLOYMENTS, result)
       if (!_isNil(result.error)) store.dispatch('setError', result.error)
     })
   },
   loadDeploymentAliases (store, deployment) {
     return api.now.deployments.getDeploymentAliases(
-      store.getters.authorization,
       deployment
     ).then((result) => {
       store.commit(types.SET_DEPLOYMENT_ALIASES, {
@@ -94,7 +91,6 @@ export default {
   },
   updateDeployment (store, deployment) {
     return api.now.deployments.getDeployment(
-      store.getters.authorization,
       deployment
     ).then((result) => {
       store.commit(types.UPDATE_DEPLOYMENT, result)

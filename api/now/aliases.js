@@ -11,11 +11,7 @@ const parseAliases = (result) => {
 
 export default {
   deleteAlias (authorization, alias) {
-    return http.delete(`/now/aliases/${alias.uid}`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+    return http.delete(`/now/aliases/${alias.uid}`).then((response) => {
       return {
         alias
       }
@@ -24,11 +20,7 @@ export default {
     })
   },
   getAliases (authorization) {
-    return http.get('/now/aliases', {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+    return http.get('/now/aliases').then((response) => {
       const aliases = parseAliases(response.data)
       return {
         aliases

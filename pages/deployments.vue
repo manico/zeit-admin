@@ -134,19 +134,11 @@
       }
     },
     computed: {
-      authorization () {
-        return this.$store.getters.authorization
-      },
       deploymentProjects () {
         return this.$store.getters.deploymentProjects
       },
       isLoaded () {
-        return this.authorization && this.deploymentProjects.length
-      }
-    },
-    watch: {
-      authorization () {
-        this.loadDeployments()
+        return this.deploymentProjects && this.deploymentProjects.length
       }
     },
     methods: {

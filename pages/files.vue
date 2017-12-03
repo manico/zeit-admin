@@ -2,11 +2,11 @@
   <v-container fluid
                fill-height
                grid-list-lg
-               pb-2>
+               pb-2
+               v-if="isLoaded">
     <v-layout column>
       <v-flex d-flex
-              style="flex-grow:0"
-              v-if="deployment">
+              style="flex-grow:0">
         <v-layout row
                   wrap
                   pb-3>
@@ -130,19 +130,25 @@
       },
       deployments () {
         return this.$store.getters.deployments()
+      },
+      isLoaded () {
+        return this.deployments && this.deployment
       }
     },
     watch: {
-      deployment () {
-        this.getFiles()
+      deployment (value) {
         this.file = null
+        this.files = []
+
+        if (value) {
+          this.getFiles()
+        }
       }
     },
     methods: {
       getFiles () {
         this.loadingFiles = true
         return api.now.deployments.getDeploymentFiles(
-          this.$store.getters.authorization,
           this.deployment
         ).then((result) => {
           this.files = result.files
@@ -152,7 +158,6 @@
       getFileContent () {
         this.loadingFile = true
         return api.now.deployments.getDeploymentFileContent(
-          this.$store.getters.authorization,
           this.deployment,
           this.file
         ).then((content) => {
@@ -175,13 +180,14 @@
         this.worker.onmessage = (event) => {
           this.$set(this.file, 'content', event.data)
         }
+      },
+      setDeployment () {
+        this.deployment = this.deployments.length ? this.deployments[0] : null
       }
     },
     mounted () {
-      if (this.deployments.length) {
-        this.deployment = this.deployments[0]
-        this.registerHighlightWorker()
-      }
+      this.registerHighlightWorker()
+      this.setDeployment()
     }
   }
 </script>

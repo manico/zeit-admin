@@ -26,6 +26,7 @@
 </template>
 
 <script>
+  import api from '~/api'
   import MainMenu from '~/components/MainMenu'
   import ToolbarMenu from '~/components/ToolbarMenu'
   import GlobalSnackbar from '~/components/GlobalSnackbar'
@@ -53,6 +54,9 @@
       toggleDrawer () {
         this.drawer = !this.drawer
       }
+    },
+    beforeCreate () {
+      api.http.interceptors.request.use(api.interceptor(this.$store))
     }
   }
 </script>

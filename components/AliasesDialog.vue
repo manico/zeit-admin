@@ -2,7 +2,8 @@
   <v-dialog v-model="dialog"
             lazy
             max-width="640">
-    <v-card v-if="deployment">
+    <v-card v-if="deployment"
+            class="aliases-dialog">
       <v-progress-linear :indeterminate="true"
                          height="2"
                          class="ma-0"
@@ -54,7 +55,13 @@
           <v-list-tile v-for="item in deployment.aliases"
                        :key="item.uid">
             <v-list-tile-content>
-              <v-list-tile-title>{{ item.alias }}</v-list-tile-title>
+              <v-list-tile-title>
+                <a :href="getAliasUrl(item.alias)"
+                   class="alias-url"
+                   target="_blank">
+                  {{ item.alias }}
+                </a>
+              </v-list-tile-title>
               <v-list-tile-sub-title>{{ formatDateTime(item.created) }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-avatar>
@@ -149,6 +156,9 @@
         }).then(() => {
           this.loading = false
         })
+      },
+      getAliasUrl (alias) {
+        return `https://${alias}`
       }
     }
   }

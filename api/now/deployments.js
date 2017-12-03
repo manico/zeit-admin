@@ -42,12 +42,8 @@ const parseFiles = (result) => {
 }
 
 export default {
-  addDeploymentAlias (authorization, deployment, alias) {
-    return http.post(`/now/deployments/${deployment.uid}/aliases`, alias, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  addDeploymentAlias (deployment, alias) {
+    return http.post(`/now/deployments/${deployment.uid}/aliases`, alias).then((response) => {
       return {
         deployment,
         alias: _assign(alias, response.data)
@@ -56,12 +52,8 @@ export default {
       return error.response.data
     })
   },
-  deleteDeployment (authorization, deployment) {
-    return http.delete(`/now/deployments/${deployment.uid}`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  deleteDeployment (deployment) {
+    return http.delete(`/now/deployments/${deployment.uid}`).then((response) => {
       return {
         deployment
       }
@@ -69,12 +61,8 @@ export default {
       return error.response.data
     })
   },
-  getDeployment (authorization, deployment) {
-    return http.get(`/now/deployments/${deployment.uid}`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  getDeployment (deployment) {
+    return http.get(`/now/deployments/${deployment.uid}`).then((response) => {
       const result = response.data
 
       return {
@@ -87,12 +75,8 @@ export default {
       return error.response.data
     })
   },
-  getDeploymentAliases (authorization, deployment) {
-    return http.get(`/now/deployments/${deployment.uid}/aliases`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  getDeploymentAliases (deployment) {
+    return http.get(`/now/deployments/${deployment.uid}/aliases`).then((response) => {
       const aliases = parseAliases(response.data)
       return {
         aliases
@@ -101,12 +85,8 @@ export default {
       return error.response.data
     })
   },
-  getDeploymentFiles (authorization, deployment) {
-    return http.get(`/now/deployments/${deployment.uid}/files`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  getDeploymentFiles (deployment) {
+    return http.get(`/now/deployments/${deployment.uid}/files`).then((response) => {
       const files = parseFiles(response.data)
       return {
         files
@@ -115,24 +95,16 @@ export default {
       return error.response.data
     })
   },
-  getDeploymentFileContent (authorization, deployment, file) {
-    return http.get(`/now/deployments/${deployment.uid}/files/${file.uid}`, {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  getDeploymentFileContent (deployment, file) {
+    return http.get(`/now/deployments/${deployment.uid}/files/${file.uid}`).then((response) => {
       const content = response.data
       return content
     }).catch((error) => {
       return error.response.data
     })
   },
-  getDeployments (authorization) {
-    return http.get('/now/deployments', {
-      headers: {
-        authorization
-      }
-    }).then((response) => {
+  getDeployments () {
+    return http.get('/now/deployments').then((response) => {
       const deployments = parseDeployments(response.data)
       return {
         deployments,
