@@ -12,3 +12,6 @@ dist
 
 # Security
 confidential.json
+
+# Editors
+.vscode
