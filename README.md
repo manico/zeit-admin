@@ -2,19 +2,25 @@
 
 > Zeit Admin Application with Vuetify powered by Nuxt
 
-## Build Setup
+## Using
 
-``` bash
-# install dependencies
-$ npm install
+- Clone or fork repository
+- Install dependencies `npm install`
+- Create `confidential.json` in application root
+- Start development server `npm run dev`
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+## Confidental File
 
-# build for production and launch server
-$ npm run build
-$ npm start
-
-# generate static project
-$ npm run generate
+```json
+{
+  "tokens": [
+    {
+      "name": "default",
+      "value": "NHn7hsxYpqtePquExcikQZxR",
+      "active": true
+    }
+  ]
+}
 ```
+
+If you are running application on multiple instances please make sure that confidential file is on shared storage.
