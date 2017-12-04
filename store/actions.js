@@ -19,8 +19,10 @@ export default {
         token.active = true
       }
 
-      store.commit(types.ADD_AUTH_TOKEN, {
-        token
+      return api.auth.addAuthToken(token).then(() => {
+        store.commit(types.ADD_AUTH_TOKEN, {
+          token
+        })
       })
     } else {
       store.dispatch('setError', {
@@ -46,8 +48,10 @@ export default {
     })
   },
   deleteAuthToken ({ commit }, token) {
-    commit(types.DELETE_AUTH_TOKEN, {
-      token
+    return api.auth.deleteAuthToken(token).then(() => {
+      commit(types.DELETE_AUTH_TOKEN, {
+        token
+      })
     })
   },
   deleteDeployment (store, deployment) {

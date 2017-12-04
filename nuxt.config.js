@@ -20,6 +20,9 @@ module.exports = {
   ],
   router: {
   },
+  serverMiddleware: [
+    '~/api/middleware/auth.js'
+  ],
   build: {
     vendor: [
       'axios',
